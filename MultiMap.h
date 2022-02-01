@@ -2,6 +2,7 @@
 //
 //    FILE: MultiMap.h
 //  AUTHOR: Rob Tillaart
+//  FORKED: nsocwx
 // VERSION: 0.1.5
 //    DATE: 2011-01-26
 // PURPOSE: Arduino library for fast non-linear mapping or interpolation of values
@@ -17,6 +18,7 @@
 //  0.1.3   2021-01-02  add Arduino-CI 
 //  0.1.4   2021-05-27  fix Arduino-lint
 //  0.1.5   2021-12-22  update library.json, readme, license, minor edits
+//  0.1.6   2022-01-28  replaced return formula with native arduino map function
 
 
 #define MULTIMAP_LIB_VERSION                (F("0.1.5"))
@@ -42,7 +44,9 @@ T multiMap(T value, T* _in, T* _out, uint8_t size)
     if (value == _in[pos]) return _out[pos];
 
     // interpolate in the right segment for the rest
-    return (value - _in[pos-1]) * (_out[pos] - _out[pos-1]) / (_in[pos] - _in[pos-1]) + _out[pos-1];
+    //return (value - _in[pos-1]) * (_out[pos] - _out[pos-1]) / (_in[pos] - _in[pos-1]) + _out[pos-1];
+    uint16_t m = map(value,_in[pos-1],_in[pos],_out[pos-1],_out[pos]);
+    return (m);
 }
 
 
@@ -87,7 +91,9 @@ T multiMap(T value, T* _in, T* _out, uint8_t size)
     else
     {
       // interpolate in the right segment for the rest
-      cache = (value - _in[pos-1]) * (_out[pos] - _out[pos-1]) / (_in[pos] - _in[pos-1]) + _out[pos-1];
+      //cache = (value - _in[pos-1]) * (_out[pos] - _out[pos-1]) / (_in[pos] - _in[pos-1]) + _out[pos-1];
+      uint16_t m = map(value,_in[pos-1],_in[pos],_out[pos-1],_out[pos]);
+      return (m);
     }
   }
   return cache;
